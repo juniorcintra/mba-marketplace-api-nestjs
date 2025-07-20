@@ -1,0 +1,77 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id       String  @id @default(uuid())
+    name     String
+    phone    String  @unique
+    email    String  @unique
+    password String
+    avatarId String? @map("avatar_id")
+
+    avatar   Attachment? @relation(name: "user_avatar")
+    products Product[]
+    View     View[]
+
+    @@map("users")
+}
+
+model Attachment {
+    id        String  @id @default(uuid())
+    path      String
+    userId    String? @unique @map("user_id")
+    productId String? @map("product_id")
+
+    user    User?    @relation(name: "user_avatar", fields: [userId], references: [id])
+    product Product? @relation(fields: [productId], references: [id])
+
+    @@map("attachments")
+}
+
+model Product {
+    id           String   @id @default(uuid())
+    title        String
+    description  String
+    priceInCents Int      @map("price_in_cents")
+    status       String
+    ownerId      String   @map("owner_id")
+    categoryId   String   @map("category_id")
+    createdAt    DateTime @default(now()) @map("created_at")
+    statusAt     DateTime @default(now()) @map("status_at")
+
+    owner       User         @relation(fields: [ownerId], references: [id])
+    category    Category     @relation(fields: [categoryId], references: [id])
+    attachments Attachment[]
+    View        View[]
+
+    @@map("products")
+}
+
+model Category {
+    id    String @id @default(uuid())
+    title String
+    slug  String @unique
+
+    products Product[]
+
+    @@map("categories")
+}
+
+model View {
+    id        String   @id @default(uuid())
+    viewerId  String   @map("viewer_id")
+    productId String   @map("product_id")
+    createdAt DateTime @default(now()) @map("created_at")
+
+    viewer  User    @relation(fields: [viewerId], references: [id])
+    product Product @relation(fields: [productId], references: [id])
+
+    @@unique([viewerId, productId])
+    @@map("views")
+}

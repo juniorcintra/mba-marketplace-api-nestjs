@@ -1,0 +1,188 @@
+@baseUrl = http://localhost:3333
+@authToken = {{authenticate_seller.response.body.accessToken}}
+
+###
+
+# @name register_seller
+POST {{baseUrl}}/sellers
+Content-Type: application/json
+
+{
+  "name": "New Seller",
+  "phone": "9876543210",
+  "email": "new.seller@example.com",
+  "avatarId": "a1b2c3d4-e5f6-7890-abcd-1234567890ef",
+  "password": "securepass123",
+  "passwordConfirmation": "securepass123"
+}
+
+###
+
+# @name edit_seller
+PUT {{baseUrl}}/sellers
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+{
+  "name": "Updated Seller",
+  "phone": "9999999999",
+  "email": "updated.seller@example.com",
+  "avatarId": "0f9e8d7c-6b5a-4321-a987-123456abcdef"
+}
+
+###
+
+# @name get_seller_profile
+GET {{baseUrl}}/sellers/me
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name count_products_sold_by_seller_in_last_30_days
+GET {{baseUrl}}/sellers/metrics/products/sold
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name count_products_available_by_seller_in_last_30_days
+GET {{baseUrl}}/sellers/metrics/products/available
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name count_seller_views_in_last_30_days
+GET {{baseUrl}}/sellers/metrics/views
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name count_seller_views_per_day_in_last_30_days
+GET {{baseUrl}}/sellers/metrics/views/days
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name count_product_views_in_last_7_days
+GET {{baseUrl}}/products/abc12345-6789-def0-1234-56789abcdef0/metrics/views
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name authenticate_seller
+POST {{baseUrl}}/sellers/sessions
+Content-Type: application/json
+
+{
+  "email": "new.seller@example.com",
+  "password": "securepass123"
+}
+
+###
+
+# @name sign_out
+POST {{baseUrl}}/sign-out
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name fetch_product_by_owner
+GET {{baseUrl}}/products/me
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name create_product
+POST {{baseUrl}}/products
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+{
+  "title": "New Product",
+  "description": "A modern and innovative product",
+  "priceInCents": 4599,
+  "categoryId": "c1d2e3f4-5678-9101-1121-314151617181",
+  "attachmentsIds": ["aaaabbbb-cccc-dddd-eeee-ffffffffffff", "11112222-3333-4444-5555-666677778888"]
+}
+
+###
+
+# @name fetch_all_products
+GET {{baseUrl}}/products/?page=1
+Content-Type: application/json
+
+###
+
+# @name get_product_by_id
+GET {{baseUrl}}/products/99887766-5544-3322-1100-aabbccddeeff
+Content-Type: application/json
+
+###
+
+# @name edit_product
+PUT {{baseUrl}}/products/12345678-abcd-efgh-ijkl-9876543210ab
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+{
+  "title": "Updated Product",
+  "description": "Updated product description here",
+  "priceInCents": 7999,
+  "categoryId": "abcd1234-5678-90ef-ghij-klmnopqrstuv",
+  "attachmentsIds": ["ffeeddbb-aabb-ccdd-eeff-112233445566", "99887766-5544-3322-1100-aabbccddeeff"]
+}
+
+###
+
+# @name change_product_status
+PATCH {{baseUrl}}/products/12345678-abcd-efgh-ijkl-9876543210ab/sold
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name register_product_view
+POST {{baseUrl}}/products/11223344-5566-7788-99aa-bbccddeeff00/views
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+###
+
+# @name fetch_all_categories
+GET {{baseUrl}}/categories
+Content-Type: application/json
+
+###
+
+# @name create_category
+POST {{baseUrl}}/categories
+Content-Type: application/json
+Cookie: accessToken={{authToken}}
+
+{
+  "title": "New Category"
+}
+
+###
+
+# @name upload_attachments
+POST {{baseUrl}}/attachments
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="files"; filename="example.png"
+Content-Type: image/png
+
+< ./test/e2e/example.png
+--boundary--
+###
+
+# @name get_attachment_content
+GET {{baseUrl}}/attachments/11223344-5566-7788-99aa-bbccddeeff00-example.png
+Cookie: accessToken={{authToken}}
